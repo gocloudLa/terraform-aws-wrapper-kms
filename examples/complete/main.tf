@@ -102,7 +102,7 @@ module "wrapper_kms" {
       tags = local.common_tags
     }
     "01-external" = {
-      
+
       deletion_window_in_days = 7
       description             = "External key example"
       create_external         = true
@@ -125,7 +125,7 @@ module "wrapper_kms" {
       route53_dnssec_sources = [
         {
           accounts_ids    = [data.aws_caller_identity.current.account_id] # can ommit if using current account ID which is default
-          hosted_zone_arn = "arn:aws:route53:::hostedzone/*" # can ommit, this is default value
+          hosted_zone_arn = "arn:aws:route53:::hostedzone/*"              # can ommit, this is default value
         }
       ]
 
