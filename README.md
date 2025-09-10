@@ -10,17 +10,22 @@ The Terraform wrapper for AWS KMS simplifies the management and deployment of en
 
 ### ✨ Features
 
-- 🔐 **Standard Encryption Keys** - Creates symmetric encryption/decryption keys for data at rest protection
-- 🔑 **Asymmetric Keys** - Supports digital signing and public key encryption with RSA and ECC keys  
-- 🌍 **Multi-Region Keys** - Enables global key replication for high availability
-- 📥 **External Keys** - Imports key material from external systems and HSMs
-- 🌐 **Route53 DNSSEC** - Integrates with Route53 for DNS zone signing
-- 🛡️ **Granular Access Policies** - Configures fine-grained permissions for users, administrators, and service roles
+- 🔐 [Standard Encryption Keys](#standard-encryption-keys) - Creates symmetric encryption/decryption keys for data at rest protection
+
+- 🔑 [Asymmetric Keys](#asymmetric-keys) - Supports digital signing and public key encryption with RSA and ECC keys
+
+- 📥 [External Keys](#external-keys) - Imports key material from external systems and HSMs
+
+- 🌐 [Route53 DNSSEC](#route53-dnssec) - Integrates with Route53 for DNS zone signing
+
+
 
 ### 🔗 External Modules
 | Name | Version |
 |------|------:|
 | <a href="https://github.com/terraform-aws-modules/terraform-aws-kms" target="_blank">terraform-aws-modules/kms/aws</a> | 4.0.0 |
+
+
 
 ## 🚀 Quick Start
 ```hcl
@@ -60,9 +65,15 @@ module "wrapper_kms" {
 }
 ```
 
-## 🔧 Usage Examples
 
-### Standard Encryption Key
+## 🔧 Additional Features Usage
+
+### Standard Encryption Keys
+Standard symmetric keys for encrypting and decrypting data at rest. Supports automatic key rotation and integrates with AWS services for seamless encryption.
+
+
+<details><summary>Basic Encryption Key</summary>
+
 ```hcl
 kms_parameters = {
   "app-data" = {
@@ -76,18 +87,20 @@ kms_parameters = {
     key_users           = [aws_iam_role.app_role.arn]
     
     aliases = ["app/data-encryption"]
-    
-    grants = {
-      app_access = {
-        grantee_principal = aws_iam_role.app_role.arn
-        operations        = ["Encrypt", "Decrypt", "GenerateDataKey"]
-      }
-    }
   }
 }
 ```
 
-### Digital Signing Key
+
+</details>
+
+
+### Asymmetric Keys
+Asymmetric keys for digital signing and public key encryption operations. Supports RSA and ECC key specifications for various cryptographic use cases.
+
+
+<details><summary>Digital Signing Key</summary>
+
 ```hcl
 kms_parameters = {
   "document-signing" = {
@@ -105,27 +118,39 @@ kms_parameters = {
 }
 ```
 
-### Multi-Region Key with Replica
+
+</details>
+
+
+### External Keys
+Import your own key material from external key management systems or hardware security modules (HSMs) for compliance requirements.
+
+
+<details><summary>External Key Import</summary>
+
 ```hcl
 kms_parameters = {
-  "global-primary" = {
-    description  = "Primary multi-region key"
-    multi_region = true
-    key_usage    = "ENCRYPT_DECRYPT"
-    aliases      = ["global/primary"]
-  }
-  
-  "global-replica" = {
-    region          = "us-west-2"
-    description     = "Replica in secondary region"
-    create_replica  = true
-    primary_key_arn = module.wrapper_kms.wrapper_kms["global-primary"].key_arn
-    aliases         = ["global/replica"]
+  "external-key" = {
+    description         = "Key imported from external HSM"
+    create_external     = true
+    key_material_base64 = "<base64-encoded-key-material>"
+    valid_to           = "2025-12-31T23:59:59Z"
+    
+    aliases = ["external/hsm-key"]
   }
 }
 ```
 
-### Route53 DNSSEC Key
+
+</details>
+
+
+### Route53 DNSSEC
+Specialized keys for Route53 DNSSEC signing operations to secure DNS zones and prevent DNS spoofing attacks.
+
+
+<details><summary>DNSSEC Signing Key</summary>
+
 ```hcl
 kms_parameters = {
   "dnssec-signing" = {
@@ -145,55 +170,24 @@ kms_parameters = {
 }
 ```
 
-## 📋 Key Parameters
 
-| Parameter | Description | Type | Required |
-|-----------|-------------|------|----------|
-| `metadata` | Project metadata (region, environment, etc.) | `any` | Yes |
-| `project` | Project name | `string` | Yes |
-| `kms_parameters` | Map of KMS key configurations | `map(any)` | No |
-| `kms_defaults` | Default values applied to all keys | `map(any)` | No |
+</details>
 
-### Key Configuration Options
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `description` | Key description | `null` |
-| `key_usage` | Key usage type | `"ENCRYPT_DECRYPT"` |
-| `deletion_window_in_days` | Deletion window (7-30 days) | `null` |
-| `enable_key_rotation` | Enable automatic rotation | `true` |
-| `multi_region` | Create multi-region key | `false` |
-| `aliases` | List of key aliases | `[each.key]` |
-| `key_owners` | Key owner ARNs | `[]` |
-| `key_administrators` | Key administrator ARNs | `[]` |
-| `key_users` | Key user ARNs | `[]` |
+
+
+
+
+
+
+
 
 ## ⚠️ Important Notes
 - **🔑 Key Rotation:** Only available for symmetric keys, not asymmetric or external keys
 - **🗑️ Deletion:** Minimum 7-day deletion window required for scheduled deletion
-- **🌍 Multi-Region:** Replicas cannot be created from primary keys in same region
 - **🔐 External Keys:** Require manual key material management and expiration dates
 
-## 📋 Outputs
 
-Access KMS resources through the wrapper output:
-
-```hcl
-# Key ARN
-local {
-  key_arn = module.wrapper_kms.wrapper_kms["my-key"].key_arn
-}
-
-# Key ID  
-local {
-  key_id = module.wrapper_kms.wrapper_kms["my-key"].key_id
-}
-
-# Aliases
-local {
-  aliases = module.wrapper_kms.wrapper_kms["my-key"].aliases
-}
-```
 
 ---
 
@@ -203,7 +197,7 @@ We welcome contributions! Please see our contributing guidelines for more detail
 ## 🆘 Support
 - 📧 **Email**: info@gocloud.la
 
-## 🧑💻 About
+## 🧑‍💻 About
 We are focused on Cloud Engineering, DevOps, and Infrastructure as Code.
 We specialize in helping companies design, implement, and operate secure and scalable cloud-native platforms.
 - 🌎 [www.gocloud.la](https://www.gocloud.la)
@@ -211,4 +205,4 @@ We specialize in helping companies design, implement, and operate secure and sca
 - 📫 Contact: info@gocloud.la
 
 ## 📄 License
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details. 
