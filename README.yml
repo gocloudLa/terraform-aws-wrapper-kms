@@ -1,0 +1,162 @@
+module_name: Terraform KMS Module
+module_description: The Terraform wrapper for AWS KMS simplifies the management and deployment of encryption keys in AWS Key Management Service. This wrapper functions as a standardized template that abstracts technical complexity and enables the creation of multiple reusable KMS keys.
+module_badges:
+  - url: "https://github.com/gocloudLa/terraform-aws-wrapper-kms/releases/latest"
+    image: "https://img.shields.io/github/v/release/gocloudLa/terraform-aws-wrapper-kms.svg?style=for-the-badge"
+    alt: "Latest Release"
+  - url: ""
+    image: "https://img.shields.io/github/last-commit/gocloudLa/terraform-aws-wrapper-kms.svg?style=for-the-badge"
+    alt: "Last Commit"
+  - url: "https://registry.terraform.io/modules/gocloudLa/wrapper-kms/aws"
+    image: "https://img.shields.io/badge/Terraform-Registry-7B42BC?style=for-the-badge&logo=terraform&logoColor=white"
+    alt: "Terraform Registry"
+quick_start: |
+  ```hcl
+  module "wrapper_kms" {
+    source = "path/to/wrapper_kms"
+
+    metadata = local.metadata
+    project  = "my-project"
+
+    kms_parameters = {
+      "main-key" = {
+        description             = "Main encryption key for application data"
+        deletion_window_in_days = 30
+        enable_key_rotation     = true
+        key_usage               = "ENCRYPT_DECRYPT"
+        
+        # Access policies
+        enable_default_policy = true
+        key_owners           = [data.aws_caller_identity.current.arn]
+        key_administrators   = [data.aws_caller_identity.current.arn]
+        key_users           = [data.aws_caller_identity.current.arn]
+        
+        # Aliases
+        aliases = ["my-project/main"]
+        
+        tags = {
+          Environment = "production"
+          Purpose     = "data-encryption"
+        }
+      }
+    }
+
+    kms_defaults = {
+      deletion_window_in_days = 7
+      enable_key_rotation     = true
+    }
+  }
+  ```
+features:
+  - icon: 🔐
+    title: Standard Encryption Keys
+    short_description: Creates symmetric encryption/decryption keys for data at rest protection
+    long_description: |
+      Standard symmetric keys for encrypting and decrypting data at rest. Supports automatic key rotation and integrates with AWS services for seamless encryption.
+    examples:
+      - title: Basic Encryption Key
+        code: |
+          ```hcl
+          kms_parameters = {
+            "app-data" = {
+              description             = "Key for application data encryption"
+              deletion_window_in_days = 30
+              enable_key_rotation     = true
+              key_usage               = "ENCRYPT_DECRYPT"
+              
+              enable_default_policy = true
+              key_owners           = [data.aws_caller_identity.current.arn]
+              key_users           = [aws_iam_role.app_role.arn]
+              
+              aliases = ["app/data-encryption"]
+            }
+          }
+          ```
+  - icon: 🔑
+    title: Asymmetric Keys
+    short_description: Supports digital signing and public key encryption with RSA and ECC keys
+    long_description: |
+      Asymmetric keys for digital signing and public key encryption operations. Supports RSA and ECC key specifications for various cryptographic use cases.
+    examples:
+      - title: Digital Signing Key
+        code: |
+          ```hcl
+          kms_parameters = {
+            "document-signing" = {
+              description              = "Key for digital document signing"
+              key_usage                = "SIGN_VERIFY"
+              customer_master_key_spec = "RSA_2048"
+              enable_key_rotation      = false
+              
+              key_asymmetric_sign_verify_users = [
+                aws_iam_role.document_signer.arn
+              ]
+              
+              aliases = ["documents/signing-key"]
+            }
+          }
+          ```
+  - icon: 📥
+    title: External Keys
+    short_description: Imports key material from external systems and HSMs
+    long_description: |
+      Import your own key material from external key management systems or hardware security modules (HSMs) for compliance requirements.
+    examples:
+      - title: External Key Import
+        code: |
+          ```hcl
+          kms_parameters = {
+            "external-key" = {
+              description         = "Key imported from external HSM"
+              create_external     = true
+              key_material_base64 = "<base64-encoded-key-material>"
+              valid_to           = "2025-12-31T23:59:59Z"
+              
+              aliases = ["external/hsm-key"]
+            }
+          }
+          ```
+  - icon: 🌐
+    title: Route53 DNSSEC
+    short_description: Integrates with Route53 for DNS zone signing
+    long_description: |
+      Specialized keys for Route53 DNSSEC signing operations to secure DNS zones and prevent DNS spoofing attacks.
+    examples:
+      - title: DNSSEC Signing Key
+        code: |
+          ```hcl
+          kms_parameters = {
+            "dnssec-signing" = {
+              description              = "Key for Route53 DNSSEC signing"
+              key_usage                = "SIGN_VERIFY"
+              customer_master_key_spec = "ECC_NIST_P256"
+              enable_route53_dnssec    = true
+              enable_key_rotation      = false
+              
+              route53_dnssec_sources = [{
+                accounts_ids    = [data.aws_caller_identity.current.account_id]
+                hosted_zone_arn = "arn:aws:route53:::hostedzone/*"
+              }]
+              
+              aliases = ["route53/dnssec"]
+            }
+          }
+          ```
+important_notes: |
+  - **🔑 Key Rotation:** Only available for symmetric keys, not asymmetric or external keys
+  - **🗑️ Deletion:** Minimum 7-day deletion window required for scheduled deletion
+  - **🔐 External Keys:** Require manual key material management and expiration dates
+input_table: |
+  | metadata | Project metadata (region, environment, etc.) | `any` | Yes |
+  | project | Project name | `string` | Yes |
+  | kms_parameters | Map of KMS key configurations | `map(any)` | No |
+  | kms_defaults | Default values applied to all keys | `map(any)` | No |
+  | description | Key description | `string` | No |
+  | key_usage | Key usage type (ENCRYPT_DECRYPT, SIGN_VERIFY, GENERATE_VERIFY_MAC) | `string` | No |
+  | deletion_window_in_days | Deletion window (7-30 days) | `number` | No |
+  | enable_key_rotation | Enable automatic rotation | `bool` | No |
+  | multi_region | Create multi-region key | `bool` | No |
+  | aliases | List of key aliases | `list(string)` | No |
+  | key_owners | Key owner ARNs | `list(string)` | No |
+  | key_administrators | Key administrator ARNs | `list(string)` | No |
+  | key_users | Key user ARNs | `list(string)` | No |
