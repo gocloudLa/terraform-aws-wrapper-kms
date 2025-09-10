@@ -147,16 +147,47 @@ important_notes: |
   - **🗑️ Deletion:** Minimum 7-day deletion window required for scheduled deletion
   - **🔐 External Keys:** Require manual key material management and expiration dates
 input_table: |
-  | metadata | Project metadata (region, environment, etc.) | `any` | Yes |
-  | project | Project name | `string` | Yes |
-  | kms_parameters | Map of KMS key configurations | `map(any)` | No |
-  | kms_defaults | Default values applied to all keys | `map(any)` | No |
-  | description | Key description | `string` | No |
-  | key_usage | Key usage type (ENCRYPT_DECRYPT, SIGN_VERIFY, GENERATE_VERIFY_MAC) | `string` | No |
-  | deletion_window_in_days | Deletion window (7-30 days) | `number` | No |
-  | enable_key_rotation | Enable automatic rotation | `bool` | No |
-  | multi_region | Create multi-region key | `bool` | No |
-  | aliases | List of key aliases | `list(string)` | No |
-  | key_owners | Key owner ARNs | `list(string)` | No |
-  | key_administrators | Key administrator ARNs | `list(string)` | No |
-  | key_users | Key user ARNs | `list(string)` | No |
+  | kms_defaults | Default values applied to all keys | `map(any)` | `{}` | No |
+  | kms_parameters | Map of KMS key configurations | `map(any)` | `{}` | No |
+  | aliases | List of key aliases | `list(string)` | `[each.key]` | No |
+  | aliases_use_name_prefix | Use name prefix for aliases | `bool` | `false` | No |
+  | bypass_policy_lockout_safety_check | Bypass policy lockout safety check | `bool` | `null` | No |
+  | computed_aliases | Computed aliases map | `map(string)` | `{}` | No |
+  | create | Whether to create the KMS key | `bool` | `true` | No |
+  | create_external | Create external key | `bool` | `false` | No |
+  | create_replica | Create replica key | `bool` | `false` | No |
+  | create_replica_external | Create external replica key | `bool` | `false` | No |
+  | custom_key_store_id | Custom key store ID | `string` | `null` | No |
+  | customer_master_key_spec | Key spec (RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, ECC_SECG_P256K1, SYMMETRIC_DEFAULT, HMAC_224, HMAC_256, HMAC_384, HMAC_512, SM2) | `string` | `null` | No |
+  | deletion_window_in_days | Deletion window (7-30 days) | `number` | `null` | No |
+  | description | Key description | `string` | `null` | No |
+  | enable_default_policy | Enable default key policy | `bool` | `true` | No |
+  | enable_key_rotation | Enable automatic rotation | `bool` | `true` | No |
+  | enable_route53_dnssec | Enable Route53 DNSSEC | `bool` | `false` | No |
+  | grants | Key grants configuration | `map(any)` | `null` | No |
+  | is_enabled | Whether the key is enabled | `bool` | `null` | No |
+  | key_administrators | Key administrator ARNs | `list(string)` | `[]` | No |
+  | key_asymmetric_public_encryption_users | Asymmetric public encryption user ARNs | `list(string)` | `[]` | No |
+  | key_asymmetric_sign_verify_users | Asymmetric sign/verify user ARNs | `list(string)` | `[]` | No |
+  | key_hmac_users | HMAC user ARNs | `list(string)` | `[]` | No |
+  | key_material_base64 | Base64 encoded key material for external keys | `string` | `null` | No |
+  | key_owners | Key owner ARNs | `list(string)` | `[]` | No |
+  | key_service_roles_for_autoscaling | Service roles for autoscaling | `list(string)` | `[]` | No |
+  | key_service_users | Service user ARNs | `list(string)` | `[]` | No |
+  | key_statements | Custom key policy statements | `list(any)` | `null` | No |
+  | key_symmetric_encryption_users | Symmetric encryption user ARNs | `list(string)` | `[]` | No |
+  | key_usage | Key usage type (ENCRYPT_DECRYPT, SIGN_VERIFY, GENERATE_VERIFY_MAC) | `string` | `null` | No |
+  | key_users | Key user ARNs | `list(string)` | `[]` | No |
+  | metadata | Project metadata (region, environment, etc.) | `any` | n/a | Yes |
+  | multi_region | Create multi-region key | `bool` | `false` | No |
+  | override_policy_documents | Override policy documents | `list(string)` | `[]` | No |
+  | policy | Custom key policy JSON | `string` | `null` | No |
+  | primary_external_key_arn | Primary external key ARN for replica | `string` | `null` | No |
+  | primary_key_arn | Primary key ARN for replica | `string` | `null` | No |
+  | project | Project name | `string` | n/a | Yes |
+  | region | Region for replica key | `string` | `null` | No |
+  | rotation_period_in_days | Key rotation period in days | `number` | `null` | No |
+  | route53_dnssec_sources | Route53 DNSSEC source configuration | `list(map(any))` | `null` | No |
+  | source_policy_documents | Source policy documents | `list(string)` | `[]` | No |
+  | tags | Resource tags | `map(string)` | `{}` | No |
+  | valid_to | Expiration date for external key material | `string` | `null` | No |
