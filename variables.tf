@@ -6,12 +6,8 @@ variable "metadata" {
   type = any
 }
 
-variable "project" {
-  type = string
-}
-
 /*----------------------------------------------------------------------*/
-/* ALB | Variable Definition                                            */
+/* KMS | Variable Definition                                            */
 /*----------------------------------------------------------------------*/
 
 variable "kms_parameters" {

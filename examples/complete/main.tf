@@ -19,7 +19,6 @@ module "wrapper_kms" {
   source = "../../"
 
   metadata = local.metadata
-  project  = local.project
 
   kms_parameters = {
     "00-complete" = {
@@ -99,7 +98,6 @@ module "wrapper_kms" {
         }
       }
 
-      tags = local.common_tags
     }
     "01-external" = {
 
@@ -111,7 +109,6 @@ module "wrapper_kms" {
       multi_region            = false
       valid_to                = replace(timeadd(plantimestamp(), "4380h"), "/T.*/", "T00:00:00Z") # 6 months
 
-      tags = local.common_tags
     }
     "02-dnssec-signing" = {
 
@@ -131,7 +128,6 @@ module "wrapper_kms" {
 
       aliases = ["route53/dnssec-ex"]
 
-      tags = local.common_tags
     }
     "03-primary" = {
 
@@ -144,9 +140,8 @@ module "wrapper_kms" {
 
       aliases = ["primary-standard"]
 
-      tags = local.common_tags
     }
-    "04-primary_external" = {
+    "04-primary-external" = {
       deletion_window_in_days = 7
       description             = "Primary external key of replica external key example"
       is_enabled              = true
@@ -157,7 +152,6 @@ module "wrapper_kms" {
 
       aliases = ["primary-external"]
 
-      tags = local.common_tags
     }
   }
 
