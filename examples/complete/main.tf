@@ -1,3 +1,4 @@
+## Deploy the AWS IAM Role before usign any example
 resource "aws_iam_role" "lambda" {
   name_prefix = "kms-example"
 
@@ -14,7 +15,6 @@ resource "aws_iam_role" "lambda" {
     ]
   })
 }
-
 module "wrapper_kms" {
   source = "../../"
 
@@ -72,7 +72,7 @@ module "wrapper_kms" {
       ]
 
       # Aliases
-      aliases = ["example", "00"]
+      aliases = ["complete"]
       computed_aliases = {
         ex = {
           # Sometimes you want to pass in an upstream attribute as the name and
