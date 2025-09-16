@@ -178,13 +178,11 @@ input_table: |
   | key_symmetric_encryption_users | Symmetric encryption user ARNs | `list(string)` | `[]` | No |
   | key_usage | Key usage type (ENCRYPT_DECRYPT, SIGN_VERIFY, GENERATE_VERIFY_MAC) | `string` | `null` | No |
   | key_users | Key user ARNs | `list(string)` | `[]` | No |
-  | metadata | Project metadata (region, environment, etc.) | `any` | n/a | Yes |
   | multi_region | Create multi-region key | `bool` | `false` | No |
   | override_policy_documents | Override policy documents | `list(string)` | `[]` | No |
   | policy | Custom key policy JSON | `string` | `null` | No |
   | primary_external_key_arn | Primary external key ARN for replica | `string` | `null` | No |
   | primary_key_arn | Primary key ARN for replica | `string` | `null` | No |
-  | project | Project name | `string` | n/a | Yes |
   | region | Region for replica key | `string` | `null` | No |
   | rotation_period_in_days | Key rotation period in days | `number` | `null` | No |
   | route53_dnssec_sources | Route53 DNSSEC source configuration | `list(map(any))` | `null` | No |
