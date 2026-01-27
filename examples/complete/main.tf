@@ -15,6 +15,7 @@ resource "aws_iam_role" "lambda" {
     ]
   })
 }
+
 module "wrapper_kms" {
   source = "../../"
 

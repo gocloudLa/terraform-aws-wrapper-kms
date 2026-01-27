@@ -1,6 +1,6 @@
 # Complete Example 🚀
 
-This example demonstrates the configuration of multiple KMS keys with different configuration using Terraform.
+This example demonstrates the configuration of multiple KMS keys with different configuration using Terraform, some of the resources have a reference to a IAM Role that need to be deployed first.
 
 ## 🔧 What's Included
 
