@@ -23,7 +23,7 @@ The Terraform wrapper for AWS KMS simplifies the management and deployment of en
 ### 🔗 External Modules
 | Name | Version |
 |------|------:|
-| <a href="https://github.com/terraform-aws-modules/terraform-aws-kms" target="_blank">terraform-aws-modules/kms/aws</a> | 4.0.0 |
+| <a href="https://github.com/terraform-aws-modules/terraform-aws-kms" target="_blank">terraform-aws-modules/kms/aws</a> | 4.2.0 |
 
 
 
@@ -206,6 +206,7 @@ kms_parameters = {
 | key_owners                             | Key owner ARNs                                                                                                                                                        | `list(string)`   | `[]`         | No       |
 | key_service_roles_for_autoscaling      | Service roles for autoscaling                                                                                                                                         | `list(string)`   | `[]`         | No       |
 | key_service_users                      | Service user ARNs                                                                                                                                                     | `list(string)`   | `[]`         | No       |
+| key_spec                               | Key spec (RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, ECC_SECG_P256K1, SYMMETRIC_DEFAULT, HMAC_224, HMAC_256, HMAC_384, HMAC_512, SM2) | `string`         | `null`       | No       |
 | key_statements                         | Custom key policy statements                                                                                                                                          | `list(any)`      | `null`       | No       |
 | key_symmetric_encryption_users         | Symmetric encryption user ARNs                                                                                                                                        | `list(string)`   | `[]`         | No       |
 | key_usage                              | Key usage type (ENCRYPT_DECRYPT, SIGN_VERIFY, GENERATE_VERIFY_MAC)                                                                                                    | `string`         | `null`       | No       |
