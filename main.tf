@@ -1,7 +1,7 @@
 module "kms" {
   for_each = var.kms_parameters
   source   = "terraform-aws-modules/kms/aws"
-  version  = "4.0.0"
+  version  = "4.2.0"
 
   aliases                                = try(each.value.aliases, var.kms_defaults.aliases, [each.key])
   aliases_use_name_prefix                = try(each.value.aliases_use_name_prefix, var.kms_defaults.aliases_use_name_prefix, false)
@@ -28,6 +28,7 @@ module "kms" {
   key_owners                             = try(each.value.key_owners, var.kms_defaults.key_owners, [])
   key_service_roles_for_autoscaling      = try(each.value.key_service_roles_for_autoscaling, var.kms_defaults.key_service_roles_for_autoscaling, [])
   key_service_users                      = try(each.value.key_service_users, var.kms_defaults.key_service_users, [])
+  key_spec                               = try(each.value.key_spec, var.kms_defaults.key_spec, null)
   key_statements                         = try(each.value.key_statements, var.kms_defaults.key_statements, null)
   key_symmetric_encryption_users         = try(each.value.key_symmetric_encryption_users, var.kms_defaults.key_symmetric_encryption_users, [])
   key_usage                              = try(each.value.key_usage, var.kms_defaults.key_usage, null)
