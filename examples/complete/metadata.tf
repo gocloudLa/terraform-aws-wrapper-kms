@@ -26,4 +26,6 @@ locals {
     local.common_name_prefix,
     local.metadata.key.project
   ])
+
+  sso_admin_role_name = "AWSReservedSSO_Admin_c93014c44eb11264"
 }
