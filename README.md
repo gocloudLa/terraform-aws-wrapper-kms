@@ -10,6 +10,8 @@ The Terraform wrapper for AWS KMS simplifies the management and deployment of en
 
 ### ✨ Features
 
+- 🌍 [Multi Region Replication](#multi-region-replication) - Create a primary multi‑region key and replicate it to secondary regions.
+
 - 🔐 [Standard Encryption Keys](#standard-encryption-keys) - Creates symmetric encryption/decryption keys for data at rest protection
 
 - 🔑 [Asymmetric Keys](#asymmetric-keys) - Supports digital signing and public key encryption with RSA and ECC keys
@@ -38,9 +40,7 @@ kms_parameters = {
 
     # Access policies
     enable_default_policy = true
-    key_owners           = [data.aws_caller_identity.current.arn]
-    key_administrators   = [data.aws_caller_identity.current.arn]
-    key_users            = [data.aws_caller_identity.current.arn]
+    key_administrators   = [data.aws_caller_identity.current.arn] 
 
     # Aliases
     aliases = ["my-project/main"]
@@ -57,6 +57,61 @@ kms_defaults = var.kms_defaults
 
 
 ## 🔧 Additional Features Usage
+
+### Multi Region Replication
+Use `multi_region = true` on a primary key to create a multi‑region KMS key, and then
+create lightweight replicas in other regions using `create_replica`, `primary_key_arn`,
+and `region`. This lets you use the same logical key across regions (for example,
+for cross‑region disaster recovery or active‑active architectures) while keeping
+AWS‑managed replication of key material.
+
+
+<details><summary>Primary multi‑region key</summary>
+
+```hcl
+kms_parameters = {
+  "primary-us-east-1" = {
+    description             = "Primary multi-region key"
+    deletion_window_in_days = 7
+    key_usage               = "ENCRYPT_DECRYPT"
+    customer_master_key_spec = "SYMMETRIC_DEFAULT"
+
+    # Enable multi-region on the primary key
+    multi_region = true
+
+    aliases = ["app/multi-region-primary"]
+  }
+}
+```
+
+
+</details>
+
+<details><summary>Replica key in secondary region</summary>
+
+```hcl
+# Example: create a replica of the primary key in us-west-2
+kms_parameters = {
+  "replica-us-west-2" = {
+    description = "Replica of primary multi-region key in us-west-2"
+
+    # This key will be a replica
+    create_replica = true
+
+    # ARN of the primary multi-region key
+    primary_key_arn = module.wrapper_kms.kms["primary-us-east-1"].key_arn
+
+    # Target AWS region for the replica
+    region = "us-west-2"
+
+    aliases = ["app/multi-region-replica"]
+  }
+}
+```
+
+
+</details>
+
 
 ### Standard Encryption Keys
 Standard symmetric keys for encrypting and decrypting data at rest. Supports automatic key rotation and integrates with AWS services for seamless encryption.
@@ -223,6 +278,7 @@ kms_parameters = {
 - **🔑 Key Rotation:** Only available for symmetric keys, not asymmetric or external keys
 - **🗑️ Deletion:** Minimum 7-day deletion window required for scheduled deletion
 - **🔐 External Keys:** Require manual key material management and expiration dates
+- **🌍 Multi-region keys:** `multi_region` must be decided at creation time (changing it forces recreation). Replicas require `create_replica = true`, a valid `primary_key_arn`, and a target `region`.
 
 
 
