@@ -1,4 +1,3 @@
-output "wrapper_kms" {
-  description = ""
-  value       = module.kms
+output "kms" {
+  value = module.kms
 }

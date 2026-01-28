@@ -1,8 +1,8 @@
 locals {
 
   metadata = {
-    aws_region           = "us-east-1"
-    aws_secondary_region = "us-east-2"
+    aws_region           = "us-east-2"
+    aws_secondary_region = "us-east-1"
     environment          = "Production"
     project              = "Example"
     public_domain        = "democorp.cloud"
@@ -10,7 +10,7 @@ locals {
 
     key = {
       company = "dmc"
-      region  = "use1"
+      region  = "use2"
       env     = "prd"
       project = "example"
       layer   = "project"

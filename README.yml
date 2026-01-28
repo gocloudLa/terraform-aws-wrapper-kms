@@ -12,40 +12,30 @@ module_badges:
     alt: "Terraform Registry"
 quick_start: |
   ```hcl
-  module "wrapper_kms" {
-    source = "path/to/wrapper_kms"
+  kms_parameters = {
+    "main-key" = {
+      description             = "Main encryption key for application data"
+      deletion_window_in_days = 30
+      enable_key_rotation     = true
+      key_usage               = "ENCRYPT_DECRYPT"
 
-    metadata = local.metadata
-    project  = "my-project"
+      # Access policies
+      enable_default_policy = true
+      key_owners           = [data.aws_caller_identity.current.arn]
+      key_administrators   = [data.aws_caller_identity.current.arn]
+      key_users            = [data.aws_caller_identity.current.arn]
 
-    kms_parameters = {
-      "main-key" = {
-        description             = "Main encryption key for application data"
-        deletion_window_in_days = 30
-        enable_key_rotation     = true
-        key_usage               = "ENCRYPT_DECRYPT"
-        
-        # Access policies
-        enable_default_policy = true
-        key_owners           = [data.aws_caller_identity.current.arn]
-        key_administrators   = [data.aws_caller_identity.current.arn]
-        key_users           = [data.aws_caller_identity.current.arn]
-        
-        # Aliases
-        aliases = ["my-project/main"]
-        
-        tags = {
-          Environment = "production"
-          Purpose     = "data-encryption"
-        }
+      # Aliases
+      aliases = ["my-project/main"]
+
+      tags = {
+        Environment = "production"
+        Purpose     = "data-encryption"
       }
     }
-
-    kms_defaults = {
-      deletion_window_in_days = 7
-      enable_key_rotation     = true
-    }
   }
+
+  kms_defaults = var.kms_defaults
   ```
 features:
   - icon: 🔐

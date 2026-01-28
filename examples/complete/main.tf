@@ -1,21 +1,3 @@
-## Deploy the AWS IAM Role before usign any example
-resource "aws_iam_role" "lambda" {
-  name_prefix = "kms-example"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = "sts:AssumeRole"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
 module "wrapper_kms" {
   source = "../../"
 
@@ -157,4 +139,22 @@ module "wrapper_kms" {
   }
 
   kms_defaults = var.kms_defaults
+}
+
+## Deploy the AWS IAM Role before usign any example
+resource "aws_iam_role" "lambda" {
+  name_prefix = "kms-example"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
