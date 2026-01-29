@@ -15,9 +15,9 @@ module "wrapper_kms" {
       deletion_window_in_days  = 7
       is_enabled               = true
       enable_default_policy    = false
-      
+
       ## Enabled at creation because it changing it forces recreation 
-      multi_region             = true
+      multi_region = true
 
       key_administrators = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-reserved/sso.amazonaws.com/${local.sso_admin_role_name}",
