@@ -1,7 +1,7 @@
 module "kms" {
   for_each = var.kms_parameters
   source   = "terraform-aws-modules/kms/aws"
-  version  = "4.2.0"
+  version  = "4.2.1"
 
   aliases                                = try(each.value.aliases, var.kms_defaults.aliases, [each.key])
   aliases_use_name_prefix                = try(each.value.aliases_use_name_prefix, var.kms_defaults.aliases_use_name_prefix, false)
